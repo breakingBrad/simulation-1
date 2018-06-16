@@ -22,4 +22,15 @@ module.exports = {
         console.log(err)
       });
   },
+  deleteProduct: (req, res, next) => {
+    const dbInstance = req.app.get('db');
+    const { params } = req;
+    console.log(`Removing Product Id: ${params.id}`);
+    dbInstance.delete_product(params.id)
+      .then(() => res.sendStatus(200))
+      .catch(err => {
+        res.status(500).send({ error: "Oops! Something went wrong." });
+        console.log(err)
+      });
+  }
 }

@@ -35,7 +35,7 @@ class Form extends Component {
   newProduct() {
     axios.post(`http://localhost:4000/api/product`, this.state)
       .then(response => {
-        this.props.componentDidMountForm();
+        this.props.componentDidMountApp();
         this.clearInput();
       })
       .catch(err => {

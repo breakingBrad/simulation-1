@@ -1,4 +1,4 @@
-INSERT INTO "products" (
+INSERT INTO products (
   name,
   price,
   image
