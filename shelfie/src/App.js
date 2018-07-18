@@ -8,14 +8,14 @@ import axios from 'axios';
 class App extends Component {
   constructor() {
     super();
-    this.componentDidMount = this.componentDidMount.bind(this);
     this.state = {
       inventory: []
     }
+    this.fetchInventory = this.fetchInventory.bind(this);
   }
 
-  componentDidMount() {
-    axios.get(`http://localhost:4000/api/inventory`)
+  fetchInventory() {
+    axios.get(`/api/inventory`)
       .then((res) => {
         console.log(res);
         this.setState({
@@ -24,13 +24,17 @@ class App extends Component {
       })
   }
 
+  componentDidMount() {
+    this.fetchInventory();
+  }
+
   render() {
     return (
       <div className="App">
         <Header />
         <div className="body">
-          <Dashboard inventory={this.state.inventory} componentDidMountApp={this.componentDidMount} />
-          <Form componentDidMountApp={this.componentDidMount} />
+          <Dashboard inventory={this.state.inventory} fetchInventory={this.fetchInventory} />
+          <Form fetchInventory={this.fetchInventory} />
         </div>
       </div>
     );

@@ -8,7 +8,7 @@ class Dashboard extends Component {
     console.log(`Removing Product Id: ${id}`)
     axios.delete(`/api/product/${id}`)
       .then(response => {
-        this.props.componentDidMountApp();
+        this.props.fetchInventory();
       })
       .catch(err => {
         console.log(err)

@@ -8,7 +8,7 @@ require('dotenv').config({ path: __dirname + '/../.env', });
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors);
+app.use(cors());
 
 massive(process.env.DB_CONNECTION_STRING)
   .then(dbInstance => {
@@ -22,6 +22,7 @@ massive(process.env.DB_CONNECTION_STRING)
 app.get('/api/inventory', controller.getInventory)
 app.post('/api/product', controller.createProduct)
 app.delete('/api/product/:id', controller.deleteProduct)
+// app.put('/api/product/:id', controller.updateProduct)
 
 app.get('/', (req, res) => {
   res.send('Hello, I am Server.');

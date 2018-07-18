@@ -4,24 +4,19 @@ import axios from 'axios';
 class Form extends Component {
   constructor() {
     super();
-
     this.state = {
       image: '',
       name: '',
       price: '',
     }
+    this.handleChange = this.handleChange.bind(this);
+    this.clearInput = this.clearInput.bind(this);
+    this.newProduct = this.newProduct.bind(this);
+
   }
 
-  handleImg(image) {
-    this.setState({ image });
-  }
-
-  handleName(name) {
-    this.setState({ name });
-  }
-
-  handlePrice(price) {
-    this.setState({ price });
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
   }
 
   clearInput(e) {
@@ -33,9 +28,9 @@ class Form extends Component {
   }
 
   newProduct() {
-    axios.post(`http://localhost:4000/api/product`, this.state)
+    axios.post(`/api/product`, this.state)
       .then(response => {
-        this.props.componentDidMountApp();
+        this.props.fetchInventory();
         this.clearInput();
       })
       .catch(err => {
@@ -58,7 +53,8 @@ class Form extends Component {
           <input
             className="input-line"
             type="text"
-            onChange={e => this.handleImg(e.target.value)}
+            onChange={this.handleChange}
+            name="image"
             value={this.state.image}
             placeholder=""
           />
@@ -68,7 +64,8 @@ class Form extends Component {
           <input
             className="input-line"
             type="text"
-            onChange={e => this.handleName(e.target.value)}
+            onChange={this.handleChange}
+            name="name"
             value={this.state.name}
             placeholder=""
           />
@@ -78,7 +75,8 @@ class Form extends Component {
           <input
             className="input-line"
             type="text"
-            onChange={e => this.handlePrice(e.target.value)}
+            onChange={this.handleChange}
+            name="price"
             value={this.state.price}
             placeholder="0"
           />
