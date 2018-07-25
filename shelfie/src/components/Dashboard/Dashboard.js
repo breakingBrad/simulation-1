@@ -3,30 +3,50 @@ import Product from '../Product/Product';
 import axios from 'axios';
 
 class Dashboard extends Component {
+  constructor() {
+    super()
+    this.state = {
+      inventory: [],
+    }
+    this.fetchInventory = this.fetchInventory.bind(this);
+    this.deleteProduct = this.deleteProduct.bind(this);
+  }
+  componentDidMount() {
+    this.fetchInventory();
+  }
 
   deleteProduct = (e, id) => {
     console.log(`Removing Product Id: ${id}`)
     axios.delete(`/api/product/${id}`)
       .then(response => {
-        this.props.fetchInventory();
+        this.fetchInventory();
       })
       .catch(err => {
         console.log(err)
       });
   }
 
+  fetchInventory() {
+    axios.get(`/api/inventory`)
+      .then((res) => {
+        console.log(res);
+        this.setState({
+          inventory: res.data
+        })
+      })
+  }
+
   render() {
-    const { inventory } = this.props;
-    let displayInventory = inventory.map((item, i) => {
+    const displayInventory = this.state.inventory.map((item, i) => {
       return (
         <div key={i}>
           <Product
             name={item.name}
             price={item.price}
             image={item.image}
+            currentProduct={item}
+            fetchInventory={() => this.fetchInventory()}
           />
-          <button className="dashboard-button" onClick={e => this.deleteProduct(e, item.id)}>Delete</button>
-          <button className="dashboard-button" onClick={e => this.EditProduct(e, item.id)}>Edit</button>
         </div>
       )
     })

@@ -3,40 +3,25 @@ import './App.css';
 import Dashboard from './components/Dashboard/Dashboard';
 import Form from './components/Form/Form';
 import Header from './components/Header/Header';
-import axios from 'axios';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+
 
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      inventory: []
-    }
-    this.fetchInventory = this.fetchInventory.bind(this);
-  }
-
-  fetchInventory() {
-    axios.get(`/api/inventory`)
-      .then((res) => {
-        console.log(res);
-        this.setState({
-          inventory: res.data
-        })
-      })
-  }
-
-  componentDidMount() {
-    this.fetchInventory();
-  }
-
   render() {
     return (
-      <div className="App">
-        <Header />
-        <div className="body">
-          <Dashboard inventory={this.state.inventory} fetchInventory={this.fetchInventory} />
-          <Form fetchInventory={this.fetchInventory} />
+      <Router>
+        <div className="App">
+          <Header />
+          <div className="body-content">
+            <Switch>
+              <Route exact path="/" component={Dashboard} />
+              <Route path="/add" component={Form} />
+              <Route path="/edit/:id" component={Form} />
+            </Switch>
+          </div>
         </div>
-      </div>
+      </Router>
     );
   }
 }

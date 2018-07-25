@@ -1,18 +1,47 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 class Form extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       image: '',
       name: '',
       price: '',
+      id: this.props.match.params.id,
     }
     this.handleChange = this.handleChange.bind(this);
     this.clearInput = this.clearInput.bind(this);
     this.newProduct = this.newProduct.bind(this);
+  }
 
+  componentDidMount() {
+    console.log('component did mount was called');
+    let id = this.props.match.params.id;
+    if (id) {
+      axios.get(`/api/product/${id}`)
+        .then(response => {
+          console.log(response);
+          this.setState({
+            name: response.data[0].name,
+            price: response.data[0].price,
+            image: response.data[0].image,
+            id: response.data[0].id,
+          })
+        })
+    }
+  }
+
+  componentDidUpdate(props) {
+    if(props.match.params.id !== this.props.match.params.id){
+      this.setState({
+        name: '',
+        price: 0,
+        img: '',
+        id: '',
+      })
+    }
   }
 
   handleChange(e) {
@@ -38,18 +67,33 @@ class Form extends Component {
       });
   }
 
+  editProduct(e, id) {
+    let product = {
+      image: this.state.image,
+      price: this.state.price,
+      name: this.state.name,
+      id: this.state.id,
+    };
+    axios.patch(`/api/product/${this.state.id}`, product)
+      .then(() => {
+        this.props.fetchInventory();
+      })
+      .catch(err => {
+        console.log(err)
+      });
+  }
+
   render() {
+    const editingProduct = this.state.id ? (<button className="form-button" onClick={() => this.editProduct()}>Save Changes</button>) : (<button className="form-button" onClick={() => this.newProduct()}> Add To Inventory </button>)
     return (
       <div className="form">
         <div className="inputs">
           <span role="img">
-            <img
-              src="http://www.theemailcompany.com/wp-content/uploads/2016/02/no-image-placeholder-big-300x200.jpg"
-              alt="img input" />
+            <img className="image-preview"
+              src={this.state.image === '' ? ("http://www.theemailcompany.com/wp-content/uploads/2016/02/no-image-placeholder-big-300x200.jpg") : (this.state.image)}
+              alt={this.state.name}/>
           </span>
-          <br />
-          Image URL:
-        <br />
+          <p>Image URL:</p>
           <input
             className="input-line"
             type="text"
@@ -58,9 +102,7 @@ class Form extends Component {
             value={this.state.image}
             placeholder=""
           />
-          <br />
-          Product Name:
-        <br />
+          <p>Product Name:</p>
           <input
             className="input-line"
             type="text"
@@ -69,9 +111,7 @@ class Form extends Component {
             value={this.state.name}
             placeholder=""
           />
-          <br />
-          Price:
-        <br />
+          <p>Price:</p>
           <input
             className="input-line"
             type="text"
@@ -81,11 +121,17 @@ class Form extends Component {
             placeholder="0"
           />
           <br />
-          <button className="form-button" onClick={e => this.clearInput()}>Cancel</button>
-          <button className="form-button" onClick={e => this.newProduct()}>Add to Inventory</button>
+          <div className="form-buttons-container">
+            <Link to="/">
+              <button>Cancel</button>
+            </Link>
+						<Link to="/">{editingProduct}
+            </Link>
+          </div>
         </div>
       </div>
     )
   }
 }
 export default Form;
+

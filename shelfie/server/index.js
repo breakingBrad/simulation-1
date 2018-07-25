@@ -20,12 +20,13 @@ massive(process.env.DB_CONNECTION_STRING)
   });
 
 app.get('/api/inventory', controller.getInventory)
+app.get('/api/product/:id', controller.getProduct)
 app.post('/api/product', controller.createProduct)
 app.delete('/api/product/:id', controller.deleteProduct)
-// app.put('/api/product/:id', controller.updateProduct)
+app.patch('/api/product/:id', controller.editProduct)
 
 app.get('/', (req, res) => {
-  res.send('Hello, I am Server.');
+  res.send('Hello, I live to Serve.');
 })
 
 const port = 4000;
